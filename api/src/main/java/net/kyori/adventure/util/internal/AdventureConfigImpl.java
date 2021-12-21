@@ -29,9 +29,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class AdventureConfigImpl {
-  static final Properties PROPERTIES = loadProperties();
+  private static final Properties PROPERTIES = loadProperties();
 
   private AdventureConfigImpl() {
   }
@@ -48,5 +50,52 @@ final class AdventureConfigImpl {
       }
     }
     return properties;
+  }
+
+  static @Nullable String getProperty(final @NotNull String key, final @Nullable String defaultValue) {
+    final String property = String.join(".", "net", "kyori", "adventure", key);
+    return PROPERTIES.getProperty(key, System.getProperty(property, defaultValue));
+  }
+
+  abstract static class AbstractOption implements AdventureConfig.Option {
+    final String name;
+
+    AbstractOption(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public @NotNull String name() {
+      return this.name;
+    }
+  }
+
+  static final class BooleanOptionImpl extends AbstractOption implements AdventureConfig.BooleanOption {
+    private final boolean defaultValue;
+
+    BooleanOptionImpl(final String key, final boolean defaultValue) {
+      super(key);
+      this.defaultValue = defaultValue;
+    }
+
+    @Override
+    @SuppressWarnings("checkstyle:MethodName")
+    public boolean getBoolean() {
+      return Boolean.parseBoolean(getProperty(this.name, Boolean.toString(this.defaultValue)));
+    }
+  }
+
+  static final class StringOptionImpl extends AbstractOption implements AdventureConfig.StringOption {
+    private final @Nullable String defaultValue;
+
+    StringOptionImpl(final String key, final @Nullable String defaultValue) {
+      super(key);
+      this.defaultValue = defaultValue;
+    }
+
+    @Override
+    public @Nullable String getString() {
+      return getProperty(this.name, this.defaultValue);
+    }
   }
 }

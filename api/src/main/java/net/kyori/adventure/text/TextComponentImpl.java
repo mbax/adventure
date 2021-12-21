@@ -38,7 +38,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import static java.util.Objects.requireNonNull;
 
 final class TextComponentImpl extends AbstractComponent implements TextComponent {
-  private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = AdventureConfig.getBoolean(AdventureConfig.OPTION_TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED, false);
+  private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = AdventureConfig.OPTION_TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.getBoolean();
   @VisibleForTesting
   static final char SECTION_CHAR = '§';
 
