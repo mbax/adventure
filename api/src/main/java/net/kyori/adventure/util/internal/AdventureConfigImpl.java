@@ -21,31 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.translation;
+package net.kyori.adventure.util.internal;
 
-import java.util.Locale;
-import java.util.function.Supplier;
-import net.kyori.adventure.util.internal.AdventureConfig;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
 
-final class TranslationLocales {
-  private static final Supplier<Locale> GLOBAL;
+final class AdventureConfigImpl {
+  static final Properties PROPERTIES = loadProperties();
 
-  static {
-    final String property = AdventureConfig.getString(AdventureConfig.OPTION_DEFAULT_TRANSLATION_LOCALE);
-    if (property == null || property.isEmpty()) {
-      GLOBAL = () -> Locale.US;
-    } else if (property.equals("system")) {
-      GLOBAL = Locale::getDefault;
-    } else {
-      final Locale locale = Translator.parseLocale(property);
-      GLOBAL = () -> locale;
+  private AdventureConfigImpl() {
+  }
+
+  private static Properties loadProperties() {
+    final Properties properties = new Properties();
+    final Path path = Paths.get(AdventureConfig.FILESYSTEM_DIRECTORY_NAME, AdventureConfig.FILESYSTEM_FILE_NAME);
+    if (Files.isRegularFile(path)) {
+      try (final InputStream is = Files.newInputStream(path)) {
+        properties.load(is);
+      } catch (final IOException e) {
+        // Well, that's awkward.
+        e.printStackTrace();
+      }
     }
-  }
-
-  private TranslationLocales() {
-  }
-
-  static Locale global() {
-    return GLOBAL.get();
+    return properties;
   }
 }
