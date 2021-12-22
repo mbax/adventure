@@ -26,12 +26,13 @@ package net.kyori.adventure.translation;
 import java.util.Locale;
 import java.util.function.Supplier;
 import net.kyori.adventure.util.internal.AdventureProperties;
+import org.jetbrains.annotations.Nullable;
 
 final class TranslationLocales {
   private static final Supplier<Locale> GLOBAL;
 
   static {
-    final String property = AdventureProperties.valueOf(AdventureProperties.DEFAULT_TRANSLATION_LOCALE, null);
+    final @Nullable String property = AdventureProperties.DEFAULT_TRANSLATION_LOCALE.value();
     if (property == null || property.isEmpty()) {
       GLOBAL = () -> Locale.US;
     } else if (property.equals("system")) {

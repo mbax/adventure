@@ -35,8 +35,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.8.0
  */
 public final class Services {
-  // net.kyori.adventure.serviceLoadFailuresAreFatal
-  private static final boolean SERVICE_LOAD_FAILURES_ARE_FATAL = AdventureProperties.booleanValueOf(AdventureProperties.SERVICE_LOAD_FAILURES_ARE_FATAL, true);
+  private static final boolean SERVICE_LOAD_FAILURES_ARE_FATAL = Boolean.TRUE.equals(AdventureProperties.SERVICE_LOAD_FAILURES_ARE_FATAL.value());
 
   private Services() {
   }

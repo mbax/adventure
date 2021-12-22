@@ -36,83 +36,56 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.Internal
 public final class AdventureProperties {
   /**
-   * Option for specifying the default translation locale.
+   * Property for specifying the default translation locale.
    *
    * @since 4.10.0
    */
-  public static final Option<String> DEFAULT_TRANSLATION_LOCALE = option("defaultTranslationLocale", Function.identity());
+  public static final Property<String> DEFAULT_TRANSLATION_LOCALE = option("defaultTranslationLocale", Function.identity(), null);
   /**
-   * Option for specifying whether service load failures are fatal.
+   * Property for specifying whether service load failures are fatal.
    *
    * @since 4.10.0
    */
-  public static final Option<Boolean> SERVICE_LOAD_FAILURES_ARE_FATAL = option("serviceLoadFailuresAreFatal", Boolean::parseBoolean);
+  public static final Property<Boolean> SERVICE_LOAD_FAILURES_ARE_FATAL = option("serviceLoadFailuresAreFatal", Boolean::parseBoolean, Boolean.TRUE);
   /**
-   * Option for specifying whether to warn when legacy formatting is detected.
+   * Property for specifying whether to warn when legacy formatting is detected.
    *
    * @since 4.10.0
    */
-  public static final Option<Boolean> TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED = option("text.warnWhenLegacyFormattingDetected", Boolean::parseBoolean);
+  public static final Property<Boolean> TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED = option("text.warnWhenLegacyFormattingDetected", Boolean::parseBoolean, Boolean.FALSE);
 
   private AdventureProperties() {
   }
 
   /**
-   * Creates a new option.
+   * Creates a new property.
    *
-   * @param name the option name
+   * @param name the property name
    * @param parser the value parser
+   * @param defaultValue the default value
    * @param <T> the value type
-   * @return the option
+   * @return a property
    * @since 4.10.0
    */
-  public static <T> @NotNull Option<T> option(final @NotNull String name, final @NotNull Function<String, T> parser) {
-    return new AdventurePropertiesImpl.OptionImpl<>(name, parser);
+  public static <T> @NotNull Property<T> option(final @NotNull String name, final @NotNull Function<String, T> parser, final @Nullable T defaultValue) {
+    return new AdventurePropertiesImpl.PropertyImpl<>(name, parser, defaultValue);
   }
 
   /**
-   * Gets a boolean value.
-   *
-   * @param option the option
-   * @param defaultValue the default value
-   * @return the boolean value
-   * @since 4.10.0
-   */
-  public static boolean booleanValueOf(final @NotNull Option<Boolean> option, final boolean defaultValue) {
-    return Boolean.TRUE.equals(valueOf(option, defaultValue));
-  }
-
-  /**
-   * Gets a boolean value.
-   *
-   * @param option the option
-   * @param defaultValue the default value
-   * @return the boolean value
-   * @since 4.10.0
-   */
-  public static <T> @Nullable T valueOf(final @NotNull Option<T> option, final @Nullable T defaultValue) {
-    final String key = option.name();
-    final String property = String.join(".", "net", "kyori", "adventure", key);
-    final String value = System.getProperty(property, AdventurePropertiesImpl.PROPERTIES.getProperty(key));
-    return value != null ? ((AdventurePropertiesImpl.OptionImpl<T>) option).parser.apply(value) : defaultValue;
-  }
-
-  /**
-   * An option.
+   * A property.
    *
    * @param <T> the value type
    * @since 4.10.0
    */
   @ApiStatus.Internal
   @ApiStatus.NonExtendable
-  @SuppressWarnings("unused")
-  public interface Option<T> {
+  public interface Property<T> {
     /**
-     * Gets the name.
+     * Gets the value.
      *
-     * @return the name
+     * @return the value
      * @since 4.10.0
      */
-    @NotNull String name();
+    @Nullable T value();
   }
 }
