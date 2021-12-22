@@ -31,7 +31,7 @@ final class TranslationLocales {
   private static final Supplier<Locale> GLOBAL;
 
   static {
-    final String property = AdventureConfig.OPTION_DEFAULT_TRANSLATION_LOCALE.getString();
+    final String property = AdventureConfig.getString(AdventureConfig.OPTION_DEFAULT_TRANSLATION_LOCALE);
     if (property == null || property.isEmpty()) {
       GLOBAL = () -> Locale.US;
     } else if (property.equals("system")) {

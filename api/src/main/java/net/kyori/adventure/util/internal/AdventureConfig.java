@@ -26,6 +26,7 @@ package net.kyori.adventure.util.internal;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Adventure configuration.
@@ -52,91 +53,59 @@ public final class AdventureConfig {
    *
    * @since 4.10.0
    */
-  public static final StringOption OPTION_DEFAULT_TRANSLATION_LOCALE = forString("defaultTranslationLocale", null);
+  public static final String OPTION_DEFAULT_TRANSLATION_LOCALE = "defaultTranslationLocale";
   /**
    * Option for specifying whether service load failures are fatal.
    *
    * @since 4.10.0
    */
-  public static final BooleanOption OPTION_SERVICE_LOAD_FAILURES_ARE_FATAL = forBoolean("serviceLoadFailuresAreFatal", true);
+  public static final String OPTION_SERVICE_LOAD_FAILURES_ARE_FATAL = "serviceLoadFailuresAreFatal";
   /**
    * Option for specifying whether to warn when legacy formatting is detected.
    *
    * @since 4.10.0
    */
-  public static final BooleanOption OPTION_TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED = forBoolean("text.warnWhenLegacyFormattingDetected", false);
+  public static final String OPTION_TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED = "text.warnWhenLegacyFormattingDetected";
 
   private AdventureConfig() {
   }
 
   /**
-   * Creates a new {@code boolean} option.
+   * Gets a boolean value.
    *
-   * @param name the option name
+   * @param key the key
    * @param defaultValue the default value
-   * @return the option
+   * @return the boolean value
    * @since 4.10.0
    */
-  public static @NotNull BooleanOption forBoolean(final @NotNull String name, final boolean defaultValue) {
-    return new AdventureConfigImpl.BooleanOptionImpl(name, defaultValue);
+  @SuppressWarnings("checkstyle:MethodName")
+  public static boolean getBoolean(final @NotNull String key, final boolean defaultValue) {
+    return Boolean.parseBoolean(getString(key, Boolean.toString(defaultValue)));
   }
 
   /**
-   * Creates a new {@code String} option.
+   * Gets a string value, or {@code null}.
    *
-   * @param name the option name
+   * @param key the key
+   * @return the string value, or {@code null}
+   * @since 4.10.0
+   */
+  @SuppressWarnings("checkstyle:MethodName")
+  public static @Nullable String getString(final @NotNull String key) {
+    return getString(key, null);
+  }
+
+  /**
+   * Gets a string value.
+   *
+   * @param key the key
    * @param defaultValue the default value
-   * @return the option
+   * @return the string value
    * @since 4.10.0
    */
-  public static @NotNull StringOption forString(final @NotNull String name, final String defaultValue) {
-    return new AdventureConfigImpl.StringOptionImpl(name, defaultValue);
-  }
-
-  /**
-   * An option.
-   *
-   * @since 4.10.0
-   */
-  public interface Option {
-    /**
-     * Gets the name.
-     *
-     * @return the name
-     * @since 4.10.0
-     */
-    @NotNull String name();
-  }
-
-  /**
-   * A {@code boolean} option.
-   *
-   * @since 4.10.0
-   */
-  public interface BooleanOption extends Option {
-    /**
-     * Gets the value.
-     *
-     * @return the name
-     * @since 4.10.0
-     */
-    @SuppressWarnings("checkstyle:MethodName")
-    boolean getBoolean();
-  }
-
-  /**
-   * A {@code String} option.
-   *
-   * @since 4.10.0
-   */
-  public interface StringOption extends Option {
-    /**
-     * Gets the value.
-     *
-     * @return the name
-     * @since 4.10.0
-     */
-    @SuppressWarnings("checkstyle:MethodName")
-    @Nullable String getString();
+  @SuppressWarnings("checkstyle:MethodName")
+  public static @Nullable String getString(final @NotNull String key, final @Nullable String defaultValue) {
+    final String property = String.join(".", "net", "kyori", "adventure", key);
+    return AdventureConfigImpl.PROPERTIES.getProperty(key, System.getProperty(property, defaultValue));
   }
 }
