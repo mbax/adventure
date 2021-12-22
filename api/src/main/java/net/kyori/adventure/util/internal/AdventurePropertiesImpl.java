@@ -29,16 +29,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.function.Function;
+import org.jetbrains.annotations.NotNull;
 
-final class AdventureConfigImpl {
+final class AdventurePropertiesImpl {
+  private static final String FILESYSTEM_DIRECTORY_NAME = "config";
+  private static final String FILESYSTEM_FILE_NAME = "adventure.properties";
   static final Properties PROPERTIES = loadProperties();
 
-  private AdventureConfigImpl() {
+  private AdventurePropertiesImpl() {
   }
 
   private static Properties loadProperties() {
     final Properties properties = new Properties();
-    final Path path = Paths.get(AdventureConfig.FILESYSTEM_DIRECTORY_NAME, AdventureConfig.FILESYSTEM_FILE_NAME);
+    final Path path = Paths.get(FILESYSTEM_DIRECTORY_NAME, FILESYSTEM_FILE_NAME);
     if (Files.isRegularFile(path)) {
       try (final InputStream is = Files.newInputStream(path)) {
         properties.load(is);
@@ -48,5 +52,30 @@ final class AdventureConfigImpl {
       }
     }
     return properties;
+  }
+
+  static final class OptionImpl<T> implements AdventureProperties.Option<T> {
+    private final String name;
+    final Function<String, T> parser;
+
+    OptionImpl(final @NotNull String name, final @NotNull Function<String, T> parser) {
+      this.name = name;
+      this.parser = parser;
+    }
+
+    @Override
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    @Override
+    public boolean equals(final Object that) {
+      return this == that;
+    }
+
+    @Override
+    public int hashCode() {
+      return this.name.hashCode();
+    }
   }
 }

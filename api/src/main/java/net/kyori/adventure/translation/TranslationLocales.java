@@ -25,13 +25,13 @@ package net.kyori.adventure.translation;
 
 import java.util.Locale;
 import java.util.function.Supplier;
-import net.kyori.adventure.util.internal.AdventureConfig;
+import net.kyori.adventure.util.internal.AdventureProperties;
 
 final class TranslationLocales {
   private static final Supplier<Locale> GLOBAL;
 
   static {
-    final String property = AdventureConfig.getString(AdventureConfig.OPTION_DEFAULT_TRANSLATION_LOCALE);
+    final String property = AdventureProperties.valueOf(AdventureProperties.DEFAULT_TRANSLATION_LOCALE, null);
     if (property == null || property.isEmpty()) {
       GLOBAL = () -> Locale.US;
     } else if (property.equals("system")) {

@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Nag;
-import net.kyori.adventure.util.internal.AdventureConfig;
+import net.kyori.adventure.util.internal.AdventureProperties;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import static java.util.Objects.requireNonNull;
 
 final class TextComponentImpl extends AbstractComponent implements TextComponent {
-  private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = AdventureConfig.getBoolean(AdventureConfig.OPTION_TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED, false);
+  private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = AdventureProperties.booleanValueOf(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED, false);
   @VisibleForTesting
   static final char SECTION_CHAR = '§';
 
